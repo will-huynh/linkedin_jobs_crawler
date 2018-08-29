@@ -88,7 +88,7 @@ class LinkedInJobsCrawler(object):
     def run_crawler(self):
         page_num = 0
         current_url = self.url_queue.popleft()
-        self.crawled_urls.append(current_url)
+        self.crawled_urls.append(current_url) #Check for overall page url may be unnecessary
         self.load_page(current_url)
         self.get_job_entries(current_url)
         for job_entry in self.job_entry_queue
