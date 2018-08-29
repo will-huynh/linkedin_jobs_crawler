@@ -26,10 +26,10 @@ class LinkedInJobsCrawler(object):
         chrome_options.add_argument('--ignore-certificate-errors')
         chrome_options.add_argument('user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36')
 
-        #Crawler-specific configuration; replace with config file in future
+        #Crawler-specific configuration
         self.output_filepath = os.path.dirname(sys.argv[0]) + "/output"
 
-        #Configuration options for LinkedIn Jobs Search (to account for changes in class/attribute names); replace w/ config file in future
+        #Configuration options for LinkedIn Jobs Search (to account for changes in class/attribute names)
         self.job_entry_class = "job-card-search--clickable" #class of clickable job entry within menu
         self.job_poster_class = "jobs-poster" #class of job poster profile
         self.company_name_class = "jobs-details-top-card__company-url" #class containing company name text
