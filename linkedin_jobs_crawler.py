@@ -98,13 +98,16 @@ class LinkedInJobsCrawler(object):
 
     def run_crawler(self):
         page_num = 0
-        while(page_num < 3):
+        while len(self.url_queue):
             current_url = self.url_queue.popleft()
             print('Queue url is {}.'.format(current_url))
             self.crawled_urls.append(current_url) #Check for overall page url may be unnecessary
             self.load_page(current_url)
             print('Current url is {}.'.format(self.browser.current_url))
             self.get_job_entries(current_url)
+            if len(self.job_entry_queue) == 0: #if the list is empty, break the loop and stop execution
+                print("All job entries have been crawled for this query.")
+                break
             print(self.job_entry_queue)
             while len(self.job_entry_queue):
                 job_entry = self.job_entry_queue.popleft()
@@ -112,7 +115,7 @@ class LinkedInJobsCrawler(object):
                 print('Clicked job entry: {}'.format(job_entry))
                 current_url = self.browser.current_url
                 print('Current url of job-data page: {}'.format(current_url))
-                sleep(uniform(1.0, 2.0)) #random delay to avoid timeouts
+                sleep(uniform(1.5, 2.0)) #random delay to avoid timeouts
                 soup = self.get_soup()
                 if soup is not None and current_url not in self.crawled_urls and self.browser.find_elements_by_class_name(self.job_poster_class):
                     self.crawled_urls.append(current_url)
