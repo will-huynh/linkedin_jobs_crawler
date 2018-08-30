@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import logging
 import csv
 from collections import deque
@@ -71,6 +72,12 @@ class LinkedInJobsCrawler(object):
             raise
         self.job_entry_queue.extend(job_entries)
 
+    def check_for_completion(self, url):
+        self.load_page(url)
+        print("No job entries found; reloading page to check: {}".format(url))
+        if len(self.job_entry_queue) == 0:
+            print("All job entries have been crawled for this query.")
+            self.browser.Dispose()
 
     def get_soup(self):
         html = self.browser.page_source
@@ -107,11 +114,12 @@ class LinkedInJobsCrawler(object):
             print('Current url is {}.'.format(self.browser.current_url))
             job_entries_menu = self.browser.find_element_by_class_name(self.job_entries_menu)
             job_entries_menu.send_keys(Keys.END)
+            sleep(uniform(1.0, 1.5))
             self.get_job_entries(current_url)
-            if len(self.job_entry_queue) == 0: #if the list is empty, break the loop and stop execution
-                print("All job entries have been crawled for this query.")
-                break
-            print(self.job_entry_queue)
+            if len(self.job_entry_queue) == 0: #if the list is empty, check if all entries have been pulled
+                self.check_for_completion(current_url)
+            print('Job entry elements: {}'.format(self.job_entry_queue))
+
             while len(self.job_entry_queue):
                 job_entry = self.job_entry_queue.popleft()
                 sleep(uniform(1.5, 3.0)) #random delay to avoid timeouts
@@ -125,6 +133,7 @@ class LinkedInJobsCrawler(object):
                     company_name, job_position = self.get_data(soup)
                     print('Job poster found. Retrieved data from page (HTML soup).')
                     self.output_to_csv(job_position, company_name, current_url)
+
             page_num += 1
             print('Go to page: {}'.format(page_num))
             self.url_queue.append(self.start_url + self.pagination_prefix + "{}".format(str(self.pagination_increment*page_num)))
