@@ -34,7 +34,8 @@ class LinkedInJobsCrawler(object):
         os.environ['PATH'] += ':'+self.chromedriver_path
 
         #Configuration options for LinkedIn Jobs Search (to account for changes in class/attribute names)
-        self.job_entry_class = 'job-card-search--clickable' #class of clickable job entry within menu
+        self.job_entries_menu = "jobs-search-results" #class that contains job entries
+        self.job_entry_class = "job-card-search--clickable" #class of clickable job entry within menu
         self.job_poster_class = "jobs-poster" #class of job poster profile
         self.company_name_class = "jobs-details-top-card__company-url" #class containing company name text
         self.job_position_class = "jobs-details-top-card__job-title" #class containing job title
@@ -104,6 +105,8 @@ class LinkedInJobsCrawler(object):
             self.crawled_urls.append(current_url) #Check for overall page url may be unnecessary
             self.load_page(current_url)
             print('Current url is {}.'.format(self.browser.current_url))
+            job_entries_menu = self.browser.find_elements_by_class_name("div", class_=self.job_entries_menu)
+            job_entries_menu.send_keys(Keys.END)
             self.get_job_entries(current_url)
             if len(self.job_entry_queue) == 0: #if the list is empty, break the loop and stop execution
                 print("All job entries have been crawled for this query.")
@@ -127,7 +130,7 @@ class LinkedInJobsCrawler(object):
             self.url_queue.append(self.start_url + self.pagination_prefix + "{}".format(str(self.pagination_increment*page_num)))
             if randint (1, 3) == 1:
                 print("Next page loading delayed to avoid excessive requests and timeouts")
-                sleep(uniform(10.0, 20.0))
+                sleep(uniform(15.0, 20.0))
 
 #Main method including argument parser -- still in progress
 def main():
