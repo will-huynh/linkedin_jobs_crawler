@@ -111,11 +111,11 @@ class LinkedInJobsCrawler(object):
             print(self.job_entry_queue)
             while len(self.job_entry_queue):
                 job_entry = self.job_entry_queue.popleft()
+                sleep(uniform(1.5, 3.0)) #random delay to avoid timeouts
                 job_entry.click()
                 print('Clicked job entry: {}'.format(job_entry))
                 current_url = self.browser.current_url
                 print('Current url of job-data page: {}'.format(current_url))
-                sleep(uniform(1.5, 2.0)) #random delay to avoid timeouts
                 soup = self.get_soup()
                 if soup is not None and current_url not in self.crawled_urls and self.browser.find_elements_by_class_name(self.job_poster_class):
                     self.crawled_urls.append(current_url)
@@ -125,6 +125,9 @@ class LinkedInJobsCrawler(object):
             page_num += 1
             print('Go to page: {}'.format(page_num))
             self.url_queue.append(self.start_url + self.pagination_prefix + "{}".format(str(self.pagination_increment*page_num)))
+            if randint (1, 3) == 1:
+                print("Next page loading delayed to avoid excessive requests and timeouts")
+                sleep(uniform(10.0, 20.0))
 
 #Main method including argument parser -- still in progress
 def main():
