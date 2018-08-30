@@ -105,7 +105,7 @@ class LinkedInJobsCrawler(object):
             self.crawled_urls.append(current_url) #Check for overall page url may be unnecessary
             self.load_page(current_url)
             print('Current url is {}.'.format(self.browser.current_url))
-            job_entries_menu = self.browser.find_elements_by_class_name("div", class_=self.job_entries_menu)
+            job_entries_menu = self.browser.find_elements_by_class_name(self.job_entries_menu)
             job_entries_menu.send_keys(Keys.END)
             self.get_job_entries(current_url)
             if len(self.job_entry_queue) == 0: #if the list is empty, break the loop and stop execution
