@@ -36,7 +36,7 @@ class LinkedInJobsCrawler(object):
         #Configuration options for LinkedIn Jobs Search (to account for changes in class/attribute names)
         self.job_entry_class = 'job-card-search--clickable' #class of clickable job entry within menu
         self.job_poster_class = "jobs-poster" #class of job poster profile
-        self.company_name_class = "job-card-search__company-name" #class containing company name text
+        self.company_name_class = "jobs-details-top-card__company-url" #class containing company name text
         self.job_position_class = "jobs-details-top-card__job-title" #class containing job title
         self.pagination_prefix = "&start=" #prefix for pagination part of url
         self.pagination_increment = 25 #entries per page part of url (defined by LinkedIn where a page starts after 25th entry)
@@ -80,42 +80,48 @@ class LinkedInJobsCrawler(object):
             return
 
     def get_data(self, soup):
-        company_name = soup.find("h4", class_=self.company_name_class).contents
+        company_name = soup.find("a", class_=self.company_name_class).contents
+        company_name = company_name[0].strip()
         job_position = soup.find("h1", class_=self.job_position_class).contents
+        job_position = job_position[0].strip()
         return (company_name, job_position)
 
-    def output_to_csv(self, url, job_position, company_name):
+    def output_to_csv(self, company_name, job_position, url):
         if os.path.exists(self.output_filepath) is not True:
             os.makedirs(self.output_filepath)
-        with open(self.output_file, 'w') as active_file:
-            writer = csv.writer(active_file)
-            writer.writerow([url, job_position, company_name])
+        if os.path.exists(self.output_file):
+            active_file = open(self.output_file, 'a')
+        else:
+            active_file = open(self.output_file, 'w')
+        writer = csv.writer(active_file)
+        writer.writerow([company_name, job_position, url])
 
     def run_crawler(self):
         page_num = 0
-        current_url = self.url_queue.popleft()
-        print('Queue url is {}.'.format(self.browser.current_url))
-        self.crawled_urls.append(current_url) #Check for overall page url may be unnecessary
-        self.load_page(current_url)
-        print('Current url is {}.'.format(self.browser.current_url))
-        self.get_job_entries(current_url)
-        print(self.job_entry_queue)
-        while len(self.job_entry_queue):
-            job_entry = self.job_entry_queue.popleft()
-            job_entry.click()
-            print('Clicked job entry: {}'.format(job_entry))
-            current_url = self.browser.current_url
-            print('Current url of job data page: {}'.format(current_url))
-            sleep(uniform(1.0, 2.0)) #random delay to avoid timeouts
-            soup = self.get_soup()
-            if soup is not None and current_url not in self.crawled_urls and self.browser.find_elements_by_class_name(self.job_poster_class):
-                self.crawled_urls.append(current_url)
-                company_name, job_position = self.get_data(soup)
-                print('Retrieved data from soup.')
-                self.output_to_csv(current_url, company_name, job_position)
-        page_num += 1
-        print('Increment page')
-        self.url_queue.append(self.start_url + self.pagination_prefix + "{}".format(str(self.pagination_increment*page_num)))
+        while(page_num < 3):
+            current_url = self.url_queue.popleft()
+            print('Queue url is {}.'.format(current_url))
+            self.crawled_urls.append(current_url) #Check for overall page url may be unnecessary
+            self.load_page(current_url)
+            print('Current url is {}.'.format(self.browser.current_url))
+            self.get_job_entries(current_url)
+            print(self.job_entry_queue)
+            while len(self.job_entry_queue):
+                job_entry = self.job_entry_queue.popleft()
+                job_entry.click()
+                print('Clicked job entry: {}'.format(job_entry))
+                current_url = self.browser.current_url
+                print('Current url of job-data page: {}'.format(current_url))
+                sleep(uniform(1.0, 2.0)) #random delay to avoid timeouts
+                soup = self.get_soup()
+                if soup is not None and current_url not in self.crawled_urls and self.browser.find_elements_by_class_name(self.job_poster_class):
+                    self.crawled_urls.append(current_url)
+                    company_name, job_position = self.get_data(soup)
+                    print('Job poster found. Retrieved data from page (HTML soup).')
+                    self.output_to_csv(job_position, company_name, current_url)
+            page_num += 1
+            print('Go to page: {}'.format(page_num))
+            self.url_queue.append(self.start_url + self.pagination_prefix + "{}".format(str(self.pagination_increment*page_num)))
 
 #Main method including argument parser -- still in progress
 def main():
