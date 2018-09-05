@@ -63,7 +63,6 @@ class LinkedInJobsCrawler(object):
         try:
             self.browser.get(url)
         except Exception as e:
-            logging.exception(e)
             print("Invalid url. Specific error: {}".format(e))
             return
 
