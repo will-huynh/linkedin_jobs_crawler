@@ -32,7 +32,9 @@ class LinkedInJobsCrawler(object):
         self.job_entry_class = "job-card-search--clickable" #class of clickable job entry within menu
         self.job_poster_class = "jobs-poster" #class of job poster profile
         self.company_name_class = "jobs-details-top-card__company-url" #class containing company name text
+        self.company_name_tag = "a" #tag of element containing a company name
         self.job_position_class = "jobs-details-top-card__job-title" #class containing job title
+        self.job_position_tag = "h1" #tag of element containing a job position
         self.pagination_prefix = "&start=" #prefix for pagination part of urlstart_url
         self.pagination_increment = 25 #entries per page part of url (defined byprevent webdriver timeout exception site:stackoverflow.com LinkedIn where a page starts after 25th entry)
 
@@ -74,9 +76,9 @@ class LinkedInJobsCrawler(object):
             return
 
     def parse_content(self, soup):
-        company_name = soup.find("a", class_=self.company_name_class).contents
+        company_name = soup.find(self.company_name_tag, class_=self.company_name_class).contents
         company_name = company_name[0].strip()
-        job_position = soup.find("h1", class_=self.job_position_class).contents
+        job_position = soup.find(self.job_position_tag, class_=self.job_position_class).contents
         job_position = job_position[0].strip()
         return (company_name, job_position)
 
