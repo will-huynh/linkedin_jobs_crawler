@@ -18,10 +18,10 @@ The following is required to use this script:
 >git clone https://github.com/will-huynh/linkedin_jobs_crawler.git
 
 2. Go to the cloned directory on your local machine and check for the latest version using git:
->Go to the linkedin_jobs_crawler folder
+>Navigate to the cloned linkedin_jobs_crawler folder
 
->Use: git branch master
+>git branch master
 
->Use: git pull
+>git pull
 
 3. Download [Chromedriver 2.41](http://chromedriver.chromium.org/) and place the chromedriver executable file in the linkedin_jobs_crawler folder (the same directory as the script).
