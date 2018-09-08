@@ -25,3 +25,18 @@ The following is required to use this script:
 >git pull
 
 3. Download [Chromedriver 2.41](http://chromedriver.chromium.org/) and place the chromedriver executable file in the linkedin_jobs_crawler folder (the same directory as the script).
+
+## Using the crawler:
+Use of the crawler is enabled by the command line. The crawler takes a query (job position), search location, and output file name with the .csv extension. The crawler then outputs scraped results to /<script_dir>/output/<csv_file>.
+
+First, navigate to the script directory. The crawler is then run with a terminal command using three required arguments that must be passed to the crawler, specified by the following command and tags:
+>python3 linkedin_jobs_crawler.py
+
+>-k or --keyword "<query>"
+
+>-l or --location "<query geolocation>"
+  
+>-o or --output "<csv_filename>"
+
+An example command would be:
+>python3 -k "engineer" -l "Vancouver, Canada"
