@@ -38,5 +38,8 @@ First, navigate to the script directory. The crawler is then run with a terminal
   
 >-o or --output "<csv_filename>"
 
-An example command would be:
+Some example commands would be:
 >python3 -k "engineer" -l "Vancouver, Canada" -o "output.csv"
+
+>python3 --keyword "developer" --location "89143" --output "results.csv"
+
