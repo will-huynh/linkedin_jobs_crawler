@@ -4,8 +4,8 @@ The linkedin_jobs_crawler is a Python web crawler script made to investigate cra
 
 The crawler can be modified to run in a headless browser; it does not by default to leave use of login information to the user.
 
-##Installation:
-###Required Packages/Software:
+## Installation:
+### Required Packages/Software:
 The following is required to use this script:
 *[Python](https://www.python.org/) 3.6 or greater
 *[Selenium](https://www.seleniumhq.org/)
@@ -13,7 +13,7 @@ The following is required to use this script:
 *[Chromedriver 2.41](http://chromedriver.chromium.org/) for browser automation
 *[Google Chrome](https://www.google.com/chrome/) or [Chromium](https://www.chromium.org/)
 
-###Installing The Script:
+### Installing The Script:
 1. Clone the repository to your machine using git:
 >git clone https://github.com/will-huynh/linkedin_jobs_crawler.git
 
