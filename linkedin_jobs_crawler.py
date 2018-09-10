@@ -24,7 +24,7 @@ class LinkedInJobsCrawler(object):
         self.supported_outputs = ['csv']
 
         #Configuration options for webdriver (left empty as a placeholder)
-        chrome_options = webdriver.ChromeOptions() #define container for webdriver options
+        self.chrome_options = webdriver.ChromeOptions() #define container for webdriver options
         self.login_timeout = 120 #Time in seconds to throw an exception if not logged in
 
         #Configuration options for LinkedIn Jobs Search (to account for changes in class/attribute names)
